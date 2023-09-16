@@ -26,3 +26,21 @@ WHERE olist_orders_dataset.order_purchase_timestamp BETWEEN '2017-01-01 00:00:00
 GROUP BY order_purchase_year_month
 ORDER BY order_purchase_year_month ASC;
 
+-- 2017년 11월 데이터로 블랙 프라이데이에 매출 변화 여부를 시각적으로 확인하기 (주문 수)
+SELECT DATE_FORMAT(order_purchase_timestamp, '%Y-%m-%d') AS 'order_purchase_date'
+     , COUNT(DISTINCT order_id) AS cnt_orders
+FROM olist_orders_dataset
+WHERE order_purchase_timestamp BETWEEN '2017-11-01 00:00:00' AND '2017-11-30 23:59:59'
+GROUP BY order_purchase_date
+ORDER BY order_purchase_date ASC;
+
+-- 2017년 11월 데이터로 블랙 프라이데이에 매출 변화 여부를 시각적으로 확인하기 (결제 금액)
+-- 할부 처리 관련 내용은 포트폴리오 참고!
+SELECT DATE_FORMAT(olist_orders_dataset.order_purchase_timestamp, '%Y-%m-%d') AS 'order_purchase_date'
+     , ROUND(SUM(olist_order_payments_dataset.payment_value), 2) AS total_payments
+FROM olist_orders_dataset
+    INNER JOIN olist_order_payments_dataset ON olist_orders_dataset.order_id = olist_order_payments_dataset.order_id
+WHERE olist_orders_dataset.order_purchase_timestamp BETWEEN '2017-11-01 00:00:00' AND '2017-11-30 23:59:59'
+GROUP BY order_purchase_date
+ORDER BY order_purchase_date ASC;
+
